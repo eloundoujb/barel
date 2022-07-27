@@ -1,0 +1,216 @@
+entity Courrier {
+	numeroCourrier String,
+    referenceExterne String,
+	expediteur String,
+	destinataire String,
+	dossier String,
+	dateCreation Instant,
+    dateExpedition Instant,
+    dateArrivee Instant,
+    dateEnregistrement Instant,
+    dossier String,
+    type String,
+    nature String,
+    objet String,
+    projet String,
+    priorite Priorite,
+    habilitation String,
+    tags String,
+	hash Long,
+	traitement String,
+    position String,
+    visa String,
+    signataire String,
+    statut String
+}
+
+entity Dossier {
+	numeroDossier String,
+    referenceDossier String,
+	expediteur String,
+	destinataire String,
+	dateCreation Instant,
+    dateExpedition Instant,
+    dateArrivee Instant,
+    dateEnregistrement Instant,
+    cote String,
+    type String,
+    nature String,
+    intitule String,
+    projet String,
+    priorite String,
+    habilitation String,
+    tags String,
+	hash Long,
+	traitement String,
+    visa String,
+    statut String
+}
+
+entity TypeCourrier {
+    codeType String,
+	typeCourrier String
+}
+
+entity Projet {
+    codeProjet String,
+	intituleProjet String,
+	maitreOuvrage String,
+	sponsor String,	
+	cordonateur String,
+	programme String,
+	budget Long,
+	tags String
+}
+
+entity Programme {
+    codeProgramme String,
+	intituleProgramme String,
+	maitreOuvrage String,
+	sponsor String,	
+	cordonateur String,
+	programme String,
+	budget Long,
+	tags String
+}
+
+enum Priorite {
+    FRENCH, ENGLISH
+}
+
+entity Habilitation {
+    refHabilitation String,
+	habilitation String
+}
+
+entity Statut {
+    refStatut String,
+	statut String
+}
+
+entity Cote {
+    refCote String,
+	cote String
+}
+
+entity Region {
+	regionName String
+}
+
+entity Country {
+	countryName String
+}
+
+// an ignored comment
+/** not an ignored comment */
+entity Location {
+	streetAddress String,
+	postalCode String,
+	city String,
+	stateProvince String
+}
+
+entity Department {
+	departmentName String required
+}
+
+/**
+ * Task entity.
+ * @author The JHipster team.
+ */
+entity Task {
+	title String,
+	description String
+}
+
+/**
+ * The Employee entity.
+ */
+entity Employee {
+	/**
+	* The firstname attribute.
+	*/
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String,
+	hireDate Instant,
+	salary Long,
+	commissionPct Long
+}
+
+entity NatureCourrier {
+	codeNature String,
+	nature String
+}
+
+entity Job {
+	jobTitle String,
+	minSalary Long,
+	maxSalary Long
+}
+
+entity JobHistory {
+	startDate Instant,
+	endDate Instant,
+	language Language
+}
+
+enum Language {
+    FRENCH, ENGLISH
+}
+
+relationship OneToOne {
+	Country{region} to Region,
+    Location{country} to Country
+}
+
+relationship ManyToMany {
+	Job{task(title)} to Task{job}
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	Employee to Job{employee},	    
+	Department to Employee{department},    
+    Dossier to Courrier{dossier},
+    Programme to Projet{programme}
+}
+
+relationship ManyToOne {
+	Employee{manager} to Employee
+}
+
+// defining multiple oneToOne relationships
+relationship OneToOne {
+	JobHistory{job} to Job,
+	JobHistory{department} to Department,
+	JobHistory{employee} to Employee,
+    Department{location} to Location,
+    Courrier{nature} to NatureCourrier,
+    Courrier{type} to TypeCourrier,
+    Courrier{priorite} to Priorite,
+    Courrier{projet} to Projet,
+    Courrier{habilitation} to Habilitation,
+    Courrier{statut} to Statut,
+    Dossier{nature} to NatureCourrier,
+    Dossier{type} to TypeCourrier,
+    Dossier{priorite} to Priorite,
+    Dossier{projet} to Projet,
+    Dossier{habilitation} to Habilitation,
+	Dossier{cote} to Cote,
+    Dossier{statut} to Statut    
+}
+
+// Set pagination options
+paginate JobHistory, Employee with infinite-scroll
+paginate Job with pagination
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee, Job
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
